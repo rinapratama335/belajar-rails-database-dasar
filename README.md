@@ -1,22 +1,20 @@
-# Read Data (Console Rails) Dengan Find
+# Read Data All dan Count
 
-Ada beberapa cara untuk menampilkan data dengan method find ini, yaitu `find` dan `find_by`
-
-1.Dengan menggunakan find
+Untuk mendapatkan keseluruhan data yang ada di suatu tabel kita bisa gunakan method `all`.
 
 ```
-book = Book.find 1
+book = Book.all
 ```
 
-Dengan meggunakan method find ini kita bisa menampilkan data berdasarkan id. Lalu jika id yang kita cari tidak ada maka rails akan mengembalikan exception berupa record tidak ditemukan
-
-2.Dengan menggunakan find_by
-Dengan menggunakan method find_by ini parameternya berupa hash. Dengan find_by ini juga kita bisa menggunakan parameter sesuai dengan apa yang mau kita tampilkan, misal price, page atau apapun yang ingin kita jadikan parameter
+maka rails akan mengembalikan data berupa collection (bahasa kerennya array). Karena berbentuk array maka bisa kita lakukan each seperti berikut
 
 ```
-book = Book.find_by(id: 1)
+book = Book.All
+book.each do |b|
+  puts b.title
+  puts b.description
+  puts b.page
+  puts "==============="
 ```
 
-Lalu jika ada data yang sama? misal kita ada data page yang sama kemudia kita find_by. Untuk kasus ini rails akan menampilkan data yang pertama kali ditemukan. Artinya hanya satu data yang ditampilkan. Kalu mau semuanya bagaimana? Jawabannya gunakan `where`(akan kita bahas nanti)
-
-Yang membedakan lagi dari find_by ini adalah apabila record yang dicari tidak ada maka nilai yang dilempar adalah `nil`
+Untuk method `count` sendiri digunakan untuk mengetahui jumlah record yang ada di table tersebut. Misal `Book.count` akan mengembalikan jumlah data dalam tabel books.
