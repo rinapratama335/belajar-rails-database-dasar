@@ -1,19 +1,7 @@
-# Another Migration
+# Model
 
-Kali ini kita akan mencoba untuk memanfaatkan migration yang lain, yaitu manipulasi table. Sebenarnya saya juga bingung mau saya kasih nama apa, tapi ya akhirnya ini saja yang saya kasih.
+1.Penulisan nama model adalah singular dari nama tabel, misal nama tabel adalah books maka nama model-nya adalah book.rb
 
-Dan terlebih lagi masih banyak cara manipulasi datababase dan tabel, lebih lengkapnya pergi aja ke dokumentasi atau cari di google serta banyak banyak studi kasus.
+2.Peraturan penamaan sangat penting, karena dengan mengikuti peraturan yang ada kita akan otomatis terhubung dengan tabel yang bersangkutan. Misal tabel books maka nama file model book.rb dengan nama class Book. dengan begitu maka otomatis model akan terhubung ke tabel books
 
-`rils g migration AlterAuthors`
-
-```
-def up
-  rename_column :authors, :age, :old
-  change_column :authors, :name, :string, limit: 100
-end
-
-def down
-  change_column :authors, :name, :string, limit: 50
-  rename_column :authors, :old, :age
-end
-```
+3.Jika terdapat nama yang lebih dari satu kata maka nama file mengunakan underscore dan nama class disambung dengan setiap awal kata diawali huruf besar. Misal nama file book_cool.rb dengan nama class BookCool
