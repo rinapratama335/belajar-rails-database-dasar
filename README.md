@@ -1,17 +1,14 @@
-# Membuat Smart Maigration
+# Migration Add Kolom
 
-Smart migration di sini artinya kita bisa membuat migration via console.
-contoh kita ingin membuat tabel authors yang memiliki field name, address dan age, kita bisa gunakan perintah berikut :
-`rails g migration CreateAuthors name address:text age:integer`.
+Pembelajaran kali ini kita akan menambahkan kilom di tabel 'authors' kita. yang akan kita tambahkan adalah kolom creted_at dan updated_at yang bertipe datetime.
 
-Rails secara otomatis akan membuat file migration seperti di bawah ini,
+Dengan menggunakan console kita bisa ketikkan perinta `rails g migration AddTimestampsToAuthors created_at:datetime updated_at:datetime`
+
+Begitu dijalankan maka rails akan membuat sebuah file migrasi, yang berisi :
 
 ```
 def change
-  create_table :authors do |t|
-    t.string :name
-    t.text :address
-    t.integer :age
-  end
+  add_column :authors, :created_at, :datetime
+  add_column :authors, :updated_at, :datetime
 end
 ```
