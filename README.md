@@ -1,7 +1,10 @@
-# Model
+# Berkenalan Dengan Rails Console
 
-1.Penulisan nama model adalah singular dari nama tabel, misal nama tabel adalah books maka nama model-nya adalah book.rb
+Bisa dikatakan rails console itu sama dengan irb. Hanya saja dengan menggunakan rails console maka kita akan mempunyai akses terhadap class class yang ada di aplikasi/project kita.
 
-2.Peraturan penamaan sangat penting, karena dengan mengikuti peraturan yang ada kita akan otomatis terhubung dengan tabel yang bersangkutan. Misal tabel books maka nama file model book.rb dengan nama class Book. dengan begitu maka otomatis model akan terhubung ke tabel books
+Untuk menjalankan rails console cukup ketikkan `rails c`. Jika sudah muncul maka kita bisa lakukan manipulasi data dari rails console.
 
-3.Jika terdapat nama yang lebih dari satu kata maka nama file mengunakan underscore dan nama class disambung dengan setiap awal kata diawali huruf besar. Misal nama file book_cool.rb dengan nama class BookCool
+Hal pertama yang perlu kita lakukan sebelum memanipulasi data di tabel kita adalah pertama tama kita harus membuat instance baru atau lebih dikenal membuat object baru dari class tabel tersebu. Misal :
+
+`author = Author.new`
+`book = Book.new`
