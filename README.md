@@ -1,20 +1,22 @@
-# Read Data All dan Count
+# Menampilkan Data Dengan Menggunakan Where
 
-Untuk mendapatkan keseluruhan data yang ada di suatu tabel kita bisa gunakan method `all`.
-
-```
-book = Book.all
-```
-
-maka rails akan mengembalikan data berupa collection (bahasa kerennya array). Karena berbentuk array maka bisa kita lakukan each seperti berikut
+Jika menggunakan method find_by kita hanya bisa menampilkan satu data yang jumlahnyas sama, maka dengan menggunakan where kita bisa mendapatkan semua data meskipun nilainya sama.
 
 ```
-book = Book.All
+book = Book.where(page: 300)
+```
+
+Walaupun hasilnya hanya satu data saja namun nilai yang dikembalikan adalah ActiveRecord::Relation, jadi untuk mengakses detail datanya kita harus menggunkana perulangan, misalkan `each`
+
+```
+book = Book.where(page: 300)
 book.each do |b|
   puts b.title
-  puts b.description
-  puts b.page
-  puts "==============="
+end
 ```
 
-Untuk method `count` sendiri digunakan untuk mengetahui jumlah record yang ada di table tersebut. Misal `Book.count` akan mengembalikan jumlah data dalam tabel books.
+Whre ini juga bisa kita kombinasikan, misalnya
+
+`Book.where(price: 400000).where(page: 300)` => akan menampilkan data dengan price = 400000 dan page = 300
+`Book.where.not(price: 400000)` => akan menampilkan data dengan harga yang bukan 400000
+`Book.where('price = ? or price = ?', 250000, 400000)` => menampilkan data dengan harga 250000 atau 400000
