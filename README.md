@@ -1,15 +1,57 @@
-# Seed di Rails
+# Relasi One To One
 
-Seed adalah kode yang kita buat yang bisa kita gunakan untuk mengisi tabel. tentunya kita tidak ingin dong mengisi data tabel secar manual satu persatu, apalagi memakai console. Pastinya hal seperti ini akan sangat memakan waktu. Dari pada seperti itu makanya Rails memberikan fitur seed ini, yang mana kita buat suatu kode dan kita cukup ekseskusi kode tersebut kemudian data tabel akan terisi.
+Buat terlebih dahulu tabel yang akan kita gunakan, bisa dengan cara generate migration.
 
-File seed terletak di folder db, di sana terdapat file seed.rb dan di file itulah kita bisa membuat kode seed kita
+`rails g migration create_users name username`
+
+`rails g migration create_dompet balance:integer user_id:integer`
+
+Yang perlu jadi perhatian adalah saat kita ingin membuat foreign_key dari tabel dompet ke tabel users. Foreign key dari model dompet ke users dapat kita lakukan dengan menghubungkan user id di tabel user ke tabel dompet. untuk penulisanna sendiri menggunakan nama singular dan denga tambahan id karena mengacu ke primary key di tabel users yaitu id. Itulah kenapa namanya ditulis menjadi `user_id`.
+
+Lalu jalankan migrasinya, `rake db:migrate`. Hasilnya akan ada dua tabel yaitu users dan dompets. Kok namanya bisa dompets? kan kita bikinnya dompet? Jawabannya adalah ternyata rails itu pintarnya melebihi ekspektasi saya (penulis). Ternyata dari rails tabelnya akan dijamakkan sehingga terciptalah `dompets`
+
+Kemudian kita buat model user dan model dompet dan kita hubungkan model user dan dompet.
 
 ```
-Author.create(name: "Irwanto Wibowo", address: 'Gunungkidul, Yogyakarta', old: 28)
-Author.create(name: "Rina Pratama", address: 'Gianyar, Bali', old: 25)
-Author.create(name: "Andi Kurniawan", address: 'Pacitan, Jawa Timur', old: 23)
-Author.create(name: "Wahyu Iswanto", address: 'Magelang, Jawa Tengah', old: 29)
-Author.create(name: "Nurul Kharimah", address: 'Bandung, Jawa Barat', old: 22)
+class User < ApplicationRecord
+  has_one :dompet
+end
 ```
 
-Lalu bagaimana caranya kita mengeksekusi seed ini?? Kita tinggal ketikkan perintah berikut di terminal kita `rake db:seed`
+Ini bisa dibaca bahwa user memiliki satu dompet. `:dompet` ini mengacu ke nama kelas, hanya saja menggunakan huruf kecil semua
+
+```
+class Dompet < ApplicationRecord
+  belongs_to :user
+end
+```
+
+Dan ini bisa kita baca dompet dimiliki oleh user. `:user` ini mengacu ke nama kelas, hanya saja menggunakan huruf kecil semua
+
+###Menampilkan data yang berelasi
+Untuk menampilkan data yang sudah berelasi maka caranya mudah sekali. Rails itu mudah kawan............
+
+```
+user = User.first
+user.dompet.balance
+```
+
+Perintah di atas cukup untuk menampilkan data balace yang ada di tabel dompet. Kok ujug-ujug ada user dan dompet sih?? Ya itulah kelebihan rails, saat kita menghubungkan tabel dengan mendefinisikan has_one dan belongs_to maka secara otomatis user dan dompet akan dibuat oleh rails.
+
+```
+dompet = Dompet.first
+dompet.user.name
+```
+
+Lalu `first` apa? nah ketika kita ketikkan User.first maka rail akan menampilkan data pertama di tabel.
+
+Hal di atas tentunya menjadi suatu kemudahan kita dalam mengakses data, dari pada kita melakukannya secara manual seperti ini
+
+```
+user = User.first
+id = user.id
+dompet = Dompet.find_by(user_id: id)
+dompet.balance
+```
+
+lebih mudah dengan cara yang rails kasih kan?? rails is so beautiful lhoooo
