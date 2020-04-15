@@ -1,10 +1,28 @@
-# Berkenalan Dengan Rails Console
+# Update Data (Console Rails)
 
-Bisa dikatakan rails console itu sama dengan irb. Hanya saja dengan menggunakan rails console maka kita akan mempunyai akses terhadap class class yang ada di aplikasi/project kita.
+Hal pertama yang harus kita lakukan sebelum mengubah data adalah mengambil data yang mau diubah di dtabase. Kita dapat menggunakan perintah `find` untuk mengambilnya. Misal kita akan mengambil data tabel book dengan id 1. Kita bisa manfaatkan kelas active record di model kita.
 
-Untuk menjalankan rails console cukup ketikkan `rails c`. Jika sudah muncul maka kita bisa lakukan manipulasi data dari rails console.
+```
+book = Book.find(1)
+```
 
-Hal pertama yang perlu kita lakukan sebelum memanipulasi data di tabel kita adalah pertama tama kita harus membuat instance baru atau lebih dikenal membuat object baru dari class tabel tersebu. Misal :
+Hasilnya adalah object data yang kita pilih berdasarkan id yang kita masukkan. Dari hasil ini bisa kita update datanya.
 
-`author = Author.new`
-`book = Book.new`
+Ada 2 cara untuk mengubah data yang bisa kita lakukan, yaitu dengan menggunakan attr_accessor dan kedua menggunakan method update.
+
+1.Menggunakan attr_accessor
+
+```
+book = Book.find(1)
+book.title = "Title di sini"
+book.price = 100_000
+
+book.save
+```
+
+2.Menggunakan method update
+
+```
+book = Book.find(3)
+book.update(page: 200, description: "Description di sini")
+```
