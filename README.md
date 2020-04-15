@@ -1,10 +1,23 @@
-# Menampilkan Data Dengan Menggunakan Order
+# Custom Method
 
-Method Order ini kita gunakan untuk mengurutkan data,
+Kita akan belajar membuat method baru di dalam kelas ActiveRecord yang kita punya untuk kebutuhan yang sangat spesifik. Misalkan saja kita mau mencari buku yang dikateforikan sebagai buku yang mahal. Buku yang mahal ini adalah buku dengan harga di atas 200.000.
 
-`Book.order(price: :desc)` => menampilkan data berdasarkan harga (descending)
-`Book.order(price: :desc).pluck(:price)` => Menampilkan data harga yang diurutkan dari harga (descending)
-`Book.order(price: :desc).pluck(:title, :price)` => Menampilkan data title dan harga yang diurutkan dari harga (descending)
-`Book.order(title: :asc).pluck(:title)` => Menampilkan data title yang diurutkan sesuat abjad title (ascending)
+Untuk itu kita buak method baru di class Book (file book.rb di folder model). Kita buat class method (class method adalah class yang ditandai dengan `self`)
 
-Di sini kita berkenalan dengan method `pluck`. Method pluck ini kita gunakan untuk mengambil data apa saja yang mau kita tampilkan, misal title saja `pluck(:title)`, halaman saja `pluck(:page)`, dan sebagainya.
+```
+def self.expensive
+  where('price > 200000')
+end
+```
+
+Kemudian kita bisa panggil method ini melalui rails console dengan cara `Book.expensive`
+
+Atau kita bisa memberi parameter pada method custom yang dibuat dan diisi saat mengakses method melalui console
+
+```
+def self.price_equal_more(price)
+  where('price >= ?', price)
+end
+```
+
+Kemudian kita bisa akses `Book.price_equal_more(300000).pluck(:title, :price)`
