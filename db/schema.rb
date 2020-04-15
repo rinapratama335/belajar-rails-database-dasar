@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_15_065234) do
+ActiveRecord::Schema.define(version: 2020_04_15_075930) do
 
   create_table "authors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "name", limit: 50
+    t.string "name", limit: 100
     t.text "address"
-    t.integer "age"
+    t.integer "old"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
