@@ -1,37 +1,28 @@
-# Menambah Data Dengan Menggunakan Rails Console
+# Update Data (Console Rails)
 
-Kita akan menambahkan data baru ke dalam tabel books
-
-```
-rails c => masuk ke rails console
-
-book = Book.new => membuat instace/object dari class Book
-
-book.title = "title di sini"
-book.price = <price di sini>
-book.page = <page di sini>
-book.description = "desctiption di sini"
-
-book.save => menyimpan data objeck ke database
-
-book.new_record? => memeriksa apakah object book sudah disimpan atau belum. true bila belum dan false bila sudah
-book.persisted? => memeriksa apakah object book sudah disimpan atau belum. false bila belum dan true bila sudah
-```
-
-Sebenarnya kenapa kita bisa mengisi data dengan cara demikin ya?? jawabannya adalah pada saat kita membuat model / saat kita memiliki sebuah model maka secara otomatis Rails akan membuatkan attr_accessor untuk setiap properti yang kita punya (id, title, price, page, description). Jadi bisa dikatakan ketika kita akses `book.title` artinya sama aja dengan attr_read, dan `book.title="....."` adalah attr_write. Dan attr_read serta attr_write bisa digabungkan menjadi attr_accessor
-
-Selain itu kita bisa juga langsung memasukkan data ke table dengan cara hash, jadi tidak harus satu satu. Caranya adalah seperti ini :
+Hal pertama yang harus kita lakukan sebelum mengubah data adalah mengambil data yang mau diubah di dtabase. Kita dapat menggunakan perintah `find` untuk mengambilnya. Misal kita akan mengambil data tabel book dengan id 1. Kita bisa manfaatkan kelas active record di model kita.
 
 ```
-book = Book.new(title: "Pemrograman Python", price: 200_000, page: 250, description: "Mudah belajar bahasa pemrograman python dengan menggunakan buku sakti ini")
+book = Book.find(1)
+```
+
+Hasilnya adalah object data yang kita pilih berdasarkan id yang kita masukkan. Dari hasil ini bisa kita update datanya.
+
+Ada 2 cara untuk mengubah data yang bisa kita lakukan, yaitu dengan menggunakan attr_accessor dan kedua menggunakan method update.
+
+1.Menggunakan attr_accessor
+
+```
+book = Book.find(1)
+book.title = "Title di sini"
+book.price = 100_000
 
 book.save
 ```
 
-Satu lagi cara untuk menambahkan data ke table langsung dengan cara `create`
+2.Menggunakan method update
 
 ```
-Book.create(title: "React JS on Rails", price: 175_000, page: 170, description: "Belajar library Javascript yang sedang naik daun dan dikolaborasikan ddengan framework Rails")
+book = Book.find(3)
+book.update(page: 200, description: "Description di sini")
 ```
-
-Dengan cara create ini nilai kembaliannya adalah object dari data yang berhasil disimpan. Jika 2 cara sebelumnya nilai kembalianya adalha true atau false
