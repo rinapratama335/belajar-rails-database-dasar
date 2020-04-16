@@ -10,7 +10,7 @@
       <td><%= book.title %></td>
       <td><%= book.description %></td>
       <td>
-        <%= link_to 'Detail', book_path(book) %> | <%= link_to 'Edit', edit_book_path(book) %>
+        <%= link_to 'Detail', book_path(book) %> | <%= link_to 'Edit', edit_book_path(book) %> | <%= link_to 'Delete', book_path(book), method: :delete, data: {confirm: 'Kamu yakin ingin menghapus data ini?'} %>
       </td>
     </tr>
     <% end %>

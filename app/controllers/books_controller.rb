@@ -40,6 +40,9 @@ class BooksController < ApplicationController
 
   def destroy
     # untuk menghapus data
+    @book = Book.find(params[:id])
+    @book.destroy
+    redirect_to books_path
   end
 
   private
