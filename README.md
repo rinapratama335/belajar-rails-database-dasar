@@ -1,31 +1,14 @@
-# Membuat Form Edit
+# Action Update Data
 
-Oke kita akan buat fitur edit untuk data buku kita. Hal pertama yang kita buat adalah link untuk edit data. Kasih aja link sederhana seperti ini `<%= link_to 'Edit', edit_book_path(book) %>`. `edit_book_path(book)` merupakan url helper sedangkan parameter `book` adalah variabel perulangan untuk menampilkan data di index (sebenarnya kita bisa juga menulisnya menjadi `book.id`). Kemudian kita ambil data buku berdasarkan id yang kita pilih. Untuk itu kita tambah kode di method edit pada controller book :
+Form edit udah terbentuk, dan saatnya kita membuat action untuk mengupdate data yang dikirim oelh form edit.
+Kita tambahkan kode berikut di method update :
 
 ```
-def edit
+def update
   @book = Book.find(params[:id])
+  @book.update(resource_params)
+  redirect_to book_path(@book)
 end
 ```
 
-params id itu kita dapatkan dari url helper yang kita buat sebelumya.
-
-Nah unutk menampilkan formnya kita bikin dah tu file edit.html.erb dengan isi file sama persis dengan file new.html.erb, tidak ada yang berbeda :
-
-```
-<%= form_for(@book) do |f| %>
-  <%= f.label :title %><br />
-  <%= f.text_field :title %><br />
-
-  <%= f.label :description %><br />
-  <%= f.text_area :description %><br />
-
-  <%= f.label :page %><br />
-  <%= f.text_field :page %><br />
-
-  <%= f.label :price %><br />
-  <%= f.text_field :price %><br />
-
-  <%= f.submit 'Save' %>
-<% end %>
-```
+Pertama kita tangkap terlebih dahulu data yang akan diupdate dengan find berdasarkan id yang diedit. Kemudian kita update datanya dengan menangkap parameter yang dikirim dari form dengan menggunkan resource_params, mirip dengan create. Lalu kita redirect ke halaman detail data `book_path(@book)`
