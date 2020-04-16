@@ -2,12 +2,16 @@
   <thead>
     <td>Title</td>
     <td>Description</td>
+    <td>Action</td>
   </thead>
   <tbody>
     <% @books.each do |book| %>
     <tr>
       <td><%= book.title %></td>
       <td><%= book.description %></td>
+      <td>
+        <%= link_to 'Detail', book_path(book) %> 
+      </td>
     </tr>
     <% end %>
   </tbody>
