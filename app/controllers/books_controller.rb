@@ -23,6 +23,7 @@ class BooksController < ApplicationController
     book = Book.new(resource_params)
     book.save
     puts book.errors.messages
+    flash[:notice] = 'Berhasil menambahkan data'
     redirect_to books_path
   end
 
@@ -35,6 +36,7 @@ class BooksController < ApplicationController
     # menyimpan perubahan dari form edit
     @book = Book.find(params[:id])
     @book.update(resource_params)
+    flash[:notice] = 'Berhasil update data'
     redirect_to book_path(@book)
   end
 
@@ -42,6 +44,7 @@ class BooksController < ApplicationController
     # untuk menghapus data
     @book = Book.find(params[:id])
     @book.destroy
+    flash[:notice] = 'Berhasil menghapus data'
     redirect_to books_path
   end
 

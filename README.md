@@ -1,21 +1,35 @@
-# Menhapus Data
+# Membuat Flash Message
 
-Sebenarnya langkahnya tidak jauh beda dengan add maupun delete, pertama buat link dulu :
-
-```
-<%= link_to 'Delete', book_path(book), method: :delete, data: {confirm: 'Kamu yakin ingin menghapus data ini?'} %>
-```
-
-Yang jadi perbedaan adalah kita berikan method delete supaya rails tahu kalau ini adalah action delete. Kemudia kita tambahkan lagi halaman konfirmasi yang berisi pertanyaan apakah mau menghapus data atau tidak.
-
-Kemudia kita buat deh action destroy di controller book :
+Pertama kita tambahkan notice di method yang memakai flash message :
 
 ```
+def create
+  book = Book.new(resource_params)
+  book.save
+  puts book.errors.messages
+  flash[:notice] = 'Berhasil menambahkan data'
+  redirect_to books_path
+end
+
+def update
+  @book = Book.find(params[:id])
+  @book.update(resource_params)
+  flash[:notice] = 'Berhasil update data'
+  redirect_to book_path(@book)
+end
+
 def destroy
   @book = Book.find(params[:id])
   @book.destroy
+  flash[:notice] = 'Berhasil menghapus data'
   redirect_to books_path
 end
 ```
 
-Proses dari method di atas adalah kita terima dulu data yang akan didelete (`@book = Book.find(params[:id])`) kemudian kita lakukan penghapusan dengan method destroy (`@book.destroy`), lalu kita redirect ke halaman index.
+Kemudian tinggal kita letakkan dimana kita mau memberi pesan flash message ini :
+
+```
+<% if flash[:notice].present? %>
+  <%= flash[:notice] %>
+<% end %><br />
+```
