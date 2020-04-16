@@ -13,6 +13,7 @@ class BooksController < ApplicationController
 
   def new
     # menampilkan form new
+    @book = Book.new
   end
 
   def create

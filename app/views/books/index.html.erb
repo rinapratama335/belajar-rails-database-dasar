@@ -10,9 +10,11 @@
       <td><%= book.title %></td>
       <td><%= book.description %></td>
       <td>
-        <%= link_to 'Detail', book_path(book) %> 
+        <%= link_to 'Detail', book_path(book) %>
       </td>
     </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= link_to 'Tambah Data', new_book_path %>
