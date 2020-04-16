@@ -28,6 +28,7 @@ class BooksController < ApplicationController
 
   def edit
     # menampilkan form edit
+    @book = Book.find(params[:id])
   end
 
   def update
