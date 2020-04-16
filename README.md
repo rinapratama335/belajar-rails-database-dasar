@@ -1,41 +1,37 @@
-# Membuat Form Tambah Data
+# Membuat Action Create
 
-Untuk membuat form tambah data kita akan membuat link untuk menuju ke page tambah data di index
-
-```
-<%= link_to 'Tambah Data', new_book_path %>
-```
-
-`new_book_path` tidak perlu dijelaskan lagi ya, di pembahasan sebelumnya juga udah ada kok penjelasannya asal muasal route help ini.
-
-Kemudia di controller books kita buat methodnya,
+Untuk membuat action create, terlebih dahulu kita perlu mengetahui parameter apa saja yang harus kita ambil.
+Cara untuk mengetahui parameternya adalah kita inspect aja params nya.
 
 ```
-def new
-  @book = Book.new
+def create
+  render plain: params.inspect
 end
 ```
 
-`@book` di sini akan kita pakai di view new.
+Dengan adanya kode render params di atas, maka ketika tombol save di-klik maka akan muncul param apa saja yang ada (params berupa hash). Parameternya antara lain adalah :
+===> authenticity_token
+===> book (di sini data dari form kita ditampung)
+===> commit
+===> controller
+===> action
 
-Di view new pada folder books kita buat deh form nya :
+Bisa dilihat jika data yang kita kirim untuk di simpan ditangkap oleh parameter bernama `book`. Jadi saat kita ingin mengambil nilai parameternya kita sertakah juga has book ini, misal `title = params[:book][:title]`.
+
+Dari situ kita bisa masukkan datanya di method create pada controller books :
 
 ```
-<%= form_for(@book) do |f| %>
-  <%= f.label :title %><br />
-  <%= f.text_field :title %><br />
+title = params[:book][:title]
+description = params[:book][:description]
+price = params[:book][:price]
+page = params[:book][:page]
 
-  <%= f.label :description %><br />
-  <%= f.text_area :description %><br />
-
-  <%= f.label :page %><br />
-  <%= f.text_field :page %><br />
-
-  <%= f.label :price %><br />
-  <%= f.text_field :price %><br />
-
-  <%= f.submit 'Save' %>
-<% end %>
+book = Book.new(title: title, description: description, price: price, page: page)
+book.save
+puts book.errors.messages
+redirect_to books_path
 ```
 
-pada `form_-for(@book)`, variabel `@book` ini kita dapatkan dari method new pada controller books.
+Di belakang layar sebenarnya saya sudah menonaktifkan `belongs_to` di model book. Itu dikarenakan kalau tidak dinonaktifkan maka akan menjadi error karena field author harus ada, sedangkan untuk CRUD di sini masih bersifat sederhana makanya saya nonaktifkan terlebih dahulu demi kelancaran kita.
+
+`puts book.errors.messages` kita tulis untuk menampilkan error di console kita. Untuk `redirect_to books_path` di sini sepertinya sudah tau ya (route helper)
