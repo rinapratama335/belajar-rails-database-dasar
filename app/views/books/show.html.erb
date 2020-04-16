@@ -1,3 +1,6 @@
+<% if flash[:notice].present? %>
+  <%= flash[:notice] %>
+<% end %><br />
 Title : <%= @book.title %><br />
 Description : <%= @book.description %><br />
 Price : <%= @book.price %><br />
