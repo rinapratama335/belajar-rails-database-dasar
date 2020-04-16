@@ -1,37 +1,31 @@
-# Membuat Action Create
+# Membahas Tentang Resource Params
 
-Untuk membuat action create, terlebih dahulu kita perlu mengetahui parameter apa saja yang harus kita ambil.
-Cara untuk mengetahui parameternya adalah kita inspect aja params nya.
+Apa sih resource params itu??
+Reource params itu bisa kita katakan sebagai whitelist atau artinya memperbolehkan kita untuk mengambil nilai yang berasal dari form yang kita miliki.
+
+Kita ambil contoh di controller books, di sana ada form tambah data dan memiliki nilai yang nantinya akankita masukkan ke database (title, description, dan lain lain).
+Tentunya nati pada saat edit nilai ini juga akan dipakai dong? nah dari pada kita mendefinisikan itu di method cereate dan update, lebih baiknya kita bikin satu method yang menerima nilai itu semua dan dapat digunakan saat proses create maupun update.
+
+Nah gimana cara buatnya??
+
+Pertama kita buat method private dengan nama `resourcec_params`, ini diletakkan di bagain paling bawah ya. Kenapa emang? ya kalau kita letakkan di atas nanti kode yang lain akan ikut menjadi private, akibatnya ya tidak bisa kita akses dari luar kelas.
+
+Kode yang kita pakai adalah seperti ini :
 
 ```
-def create
-  render plain: params.inspect
+private
+def resource_params
+  params.require(:book).permit(:title, :description, :price, :page)
 end
 ```
 
-Dengan adanya kode render params di atas, maka ketika tombol save di-klik maka akan muncul param apa saja yang ada (params berupa hash). Parameternya antara lain adalah :
-===> authenticity_token
-===> book (di sini data dari form kita ditampung)
-===> commit
-===> controller
-===> action
+Udah tau kan `:book` didapat dari mana??? ini adalah parameter dari ActionController, cek aja kalau tidak percaya (`render plain: params.inspect`)
 
-Bisa dilihat jika data yang kita kirim untuk di simpan ditangkap oleh parameter bernama `book`. Jadi saat kita ingin mengambil nilai parameternya kita sertakah juga has book ini, misal `title = params[:book][:title]`.
-
-Dari situ kita bisa masukkan datanya di method create pada controller books :
+kemudian di method create kita bisa ubah kodenya menjadi seperti ini :
 
 ```
-title = params[:book][:title]
-description = params[:book][:description]
-price = params[:book][:price]
-page = params[:book][:page]
-
-book = Book.new(title: title, description: description, price: price, page: page)
+book = Book.new(resource_params)
 book.save
 puts book.errors.messages
 redirect_to books_path
 ```
-
-Di belakang layar sebenarnya saya sudah menonaktifkan `belongs_to` di model book. Itu dikarenakan kalau tidak dinonaktifkan maka akan menjadi error karena field author harus ada, sedangkan untuk CRUD di sini masih bersifat sederhana makanya saya nonaktifkan terlebih dahulu demi kelancaran kita.
-
-`puts book.errors.messages` kita tulis untuk menampilkan error di console kita. Untuk `redirect_to books_path` di sini sepertinya sudah tau ya (route helper)

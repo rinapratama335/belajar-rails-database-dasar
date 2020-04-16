@@ -20,12 +20,7 @@ class BooksController < ApplicationController
     # menyimpan data dari form
     # render plain: params.inspect
 
-    title = params[:book][:title]
-    description = params[:book][:description]
-    price = params[:book][:price]
-    page = params[:book][:page]
-
-    book = Book.new(title: title, description: description, price: price, page: page)
+    book = Book.new(resource_params)
     book.save
     puts book.errors.messages
     redirect_to books_path
@@ -41,5 +36,10 @@ class BooksController < ApplicationController
 
   def destroy
     # untuk menghapus data
+  end
+
+  private
+  def resource_params
+    params.require(:book).permit(:title, :description, :price, :page)
   end
 end
