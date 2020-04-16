@@ -1,31 +1,31 @@
-# Membahas Tentang Resource Params
+# Membuat Form Edit
 
-Apa sih resource params itu??
-Reource params itu bisa kita katakan sebagai whitelist atau artinya memperbolehkan kita untuk mengambil nilai yang berasal dari form yang kita miliki.
-
-Kita ambil contoh di controller books, di sana ada form tambah data dan memiliki nilai yang nantinya akankita masukkan ke database (title, description, dan lain lain).
-Tentunya nati pada saat edit nilai ini juga akan dipakai dong? nah dari pada kita mendefinisikan itu di method cereate dan update, lebih baiknya kita bikin satu method yang menerima nilai itu semua dan dapat digunakan saat proses create maupun update.
-
-Nah gimana cara buatnya??
-
-Pertama kita buat method private dengan nama `resourcec_params`, ini diletakkan di bagain paling bawah ya. Kenapa emang? ya kalau kita letakkan di atas nanti kode yang lain akan ikut menjadi private, akibatnya ya tidak bisa kita akses dari luar kelas.
-
-Kode yang kita pakai adalah seperti ini :
+Oke kita akan buat fitur edit untuk data buku kita. Hal pertama yang kita buat adalah link untuk edit data. Kasih aja link sederhana seperti ini `<%= link_to 'Edit', edit_book_path(book) %>`. `edit_book_path(book)` merupakan url helper sedangkan parameter `book` adalah variabel perulangan untuk menampilkan data di index (sebenarnya kita bisa juga menulisnya menjadi `book.id`). Kemudian kita ambil data buku berdasarkan id yang kita pilih. Untuk itu kita tambah kode di method edit pada controller book :
 
 ```
-private
-def resource_params
-  params.require(:book).permit(:title, :description, :price, :page)
+def edit
+  @book = Book.find(params[:id])
 end
 ```
 
-Udah tau kan `:book` didapat dari mana??? ini adalah parameter dari ActionController, cek aja kalau tidak percaya (`render plain: params.inspect`)
+params id itu kita dapatkan dari url helper yang kita buat sebelumya.
 
-kemudian di method create kita bisa ubah kodenya menjadi seperti ini :
+Nah unutk menampilkan formnya kita bikin dah tu file edit.html.erb dengan isi file sama persis dengan file new.html.erb, tidak ada yang berbeda :
 
 ```
-book = Book.new(resource_params)
-book.save
-puts book.errors.messages
-redirect_to books_path
+<%= form_for(@book) do |f| %>
+  <%= f.label :title %><br />
+  <%= f.text_field :title %><br />
+
+  <%= f.label :description %><br />
+  <%= f.text_area :description %><br />
+
+  <%= f.label :page %><br />
+  <%= f.text_field :page %><br />
+
+  <%= f.label :price %><br />
+  <%= f.text_field :price %><br />
+
+  <%= f.submit 'Save' %>
+<% end %>
 ```
