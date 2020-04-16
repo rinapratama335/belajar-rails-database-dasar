@@ -1,4 +1,13 @@
 class BooksController < ApplicationController
+  def index
+    # menampilkan semua data
+    @books = Book.all
+  end
+
+  def show
+    # menampilkan detail data
+  end
+
   def new
     # menampilkan form new
   end
@@ -17,13 +26,5 @@ class BooksController < ApplicationController
 
   def destroy
     # untuk menghapus data
-  end
-
-  def index
-    # menampilkan semua data
-  end
-
-  def show
-    # menampilkan detail data
   end
 end
