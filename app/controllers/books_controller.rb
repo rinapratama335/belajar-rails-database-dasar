@@ -33,6 +33,9 @@ class BooksController < ApplicationController
 
   def update
     # menyimpan perubahan dari form edit
+    @book = Book.find(params[:id])
+    @book.update(resource_params)
+    redirect_to book_path(@book)
   end
 
   def destroy
