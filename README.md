@@ -1,14 +1,21 @@
-# Action Update Data
+# Menhapus Data
 
-Form edit udah terbentuk, dan saatnya kita membuat action untuk mengupdate data yang dikirim oelh form edit.
-Kita tambahkan kode berikut di method update :
+Sebenarnya langkahnya tidak jauh beda dengan add maupun delete, pertama buat link dulu :
 
 ```
-def update
+<%= link_to 'Delete', book_path(book), method: :delete, data: {confirm: 'Kamu yakin ingin menghapus data ini?'} %>
+```
+
+Yang jadi perbedaan adalah kita berikan method delete supaya rails tahu kalau ini adalah action delete. Kemudia kita tambahkan lagi halaman konfirmasi yang berisi pertanyaan apakah mau menghapus data atau tidak.
+
+Kemudia kita buat deh action destroy di controller book :
+
+```
+def destroy
   @book = Book.find(params[:id])
-  @book.update(resource_params)
-  redirect_to book_path(@book)
+  @book.destroy
+  redirect_to books_path
 end
 ```
 
-Pertama kita tangkap terlebih dahulu data yang akan diupdate dengan find berdasarkan id yang diedit. Kemudian kita update datanya dengan menangkap parameter yang dikirim dari form dengan menggunkan resource_params, mirip dengan create. Lalu kita redirect ke halaman detail data `book_path(@book)`
+Proses dari method di atas adalah kita terima dulu data yang akan didelete (`@book = Book.find(params[:id])`) kemudian kita lakukan penghapusan dengan method destroy (`@book.destroy`), lalu kita redirect ke halaman index.
