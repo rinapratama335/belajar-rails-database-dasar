@@ -1,21 +1,23 @@
-# Index Action (Menampilkan Semua Data Di Tabel Buku)
+# Menampilkan Detail Data Dengan Method Show
 
-Untuk menampilkan semua data dari suatu tabel maka kita bisa gunakan method index. Contoh di sini kita menggunakan tabel `books` ya.
+Kita akan gunakan method `show` di controller books_controller.rb kita.
 
 ```
-def index
-  # menampilkan semua data
-  @books = Book.all
+def show
+  id = params[:id]
+  @book = Book.find(id)
 end
 ```
 
-Di sini kita bikin instance variabel bernama `@books` yang nantinya akan kita pakai sebagai perulangan di file books/index.html.erb
+`params[:id]` ini kita dapatkan dari placeholder route kita saat kita membuat route dengan menggunakan resource (lihat route).
+
+Sekedar tips aja, untuk melihat route apa saja yang sudah dibuat oleh resource ini kita dapat ketikkan `rake routes` di terminal ataupun lewat halaman web `localhost:3000/rails/info/routes`
+
+Kamudian kita bisa buat file show.html.erb dan bisa kita tampilkan datanya,
 
 ```
-<% @books.each do |book| %>
-<tr>
-  <td><%= book.title %></td>
-  <td><%= book.description %></td>
-</tr>
-<% end %>
+Title : <%= @book.title %><br />
+Description : <%= @book.description %><br />
+Price : <%= @book.price %><br />
+Page : <%= @book.page %>
 ```
