@@ -1,5 +1,5 @@
 class Book < ApplicationRecord
-  belongs_to :author
+  # belongs_to :author
 
   def self.expensive
     where('price > 200000')

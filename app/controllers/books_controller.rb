@@ -18,6 +18,17 @@ class BooksController < ApplicationController
 
   def create
     # menyimpan data dari form
+    # render plain: params.inspect
+
+    title = params[:book][:title]
+    description = params[:book][:description]
+    price = params[:book][:price]
+    page = params[:book][:page]
+
+    book = Book.new(title: title, description: description, price: price, page: page)
+    book.save
+    puts book.errors.messages
+    redirect_to books_path
   end
 
   def edit
