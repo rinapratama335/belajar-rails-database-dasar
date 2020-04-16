@@ -6,6 +6,9 @@ class BooksController < ApplicationController
 
   def show
     # menampilkan detail data
+    id = params[:id] # :id didapat dari palceholder di route
+    @book = Book.find(id)
+    # render plain: @book.title
   end
 
   def new
