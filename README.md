@@ -1,57 +1,52 @@
-# Relasi One To One
+# Relasi One To Many
 
-Buat terlebih dahulu tabel yang akan kita gunakan, bisa dengan cara generate migration.
+Kita akan memanfaatkan tabel books dan authors, di mana ceritanya adalah author dapat menulis banyak buku sedangkan satu buku hanya bisa ditulis oleh satu author saja.
 
-`rails g migration create_users name username`
-
-`rails g migration create_dompet balance:integer user_id:integer`
-
-Yang perlu jadi perhatian adalah saat kita ingin membuat foreign_key dari tabel dompet ke tabel users. Foreign key dari model dompet ke users dapat kita lakukan dengan menghubungkan user id di tabel user ke tabel dompet. untuk penulisanna sendiri menggunakan nama singular dan denga tambahan id karena mengacu ke primary key di tabel users yaitu id. Itulah kenapa namanya ditulis menjadi `user_id`.
-
-Lalu jalankan migrasinya, `rake db:migrate`. Hasilnya akan ada dua tabel yaitu users dan dompets. Kok namanya bisa dompets? kan kita bikinnya dompet? Jawabannya adalah ternyata rails itu pintarnya melebihi ekspektasi saya (penulis). Ternyata dari rails tabelnya akan dijamakkan sehingga terciptalah `dompets`
-
-Kemudian kita buat model user dan model dompet dan kita hubungkan model user dan dompet.
+kemudian di mana kita meletakkan reference id nya?? untuk relasi one to many ini foregn keynya kita letakkan di bagian yana bersifat banyak yaitu books. Untuk itu kita perlu menambahkan satu field di tabel book dengan nama `author_id`.
 
 ```
-class User < ApplicationRecord
-  has_one :dompet
-end
+rails g migration add_author_id_to_books author_id:integer
 ```
 
-Ini bisa dibaca bahwa user memiliki satu dompet. `:dompet` ini mengacu ke nama kelas, hanya saja menggunakan huruf kecil semua
+kemudian jalankan migrtaionnya.
+
+Untuk menghubungkan tabel books dan author ini kita perlu definisikan relationnya di fole model book.rb dan author.rb
+pada model author.rb kita tambahkan kode berikut `has_many :books`. Kenapa `:books`? bukankah pada relasi sebelumnya hanya singular ya?? singular itu jika kita hanya punya satu (one). Namun berhubung author ini punya banyak book (many) maka dari itu class yang mereferensi juga dibikin jamak.
+
+sedangkan di file model book.rb kita tambahkan kode `belongs_to :author`.
+
+Sejauh ini kita berhasil membuat relasi namun belum bisa menampilkan hasil relasinya karena di tabel books author_id nya belum terisi apa apa.
+Kita bisa lakukan cara berikut ini untuk mengisi author_id nya.
 
 ```
-class Dompet < ApplicationRecord
-  belongs_to :user
-end
+pengarang = Author.first  ==> mengambil object pengarang pertama
+book = Book.first         ==> mengambil objeck buku pertama
+book.author = pengarang   ==> mengisi author_id dengan data pengarang
+book                      ==> hasilnya data author_id akan terisi dengan data pengarang yang kita akses
+book.save                 ==> menyimpan ke database
 ```
 
-Dan ini bisa kita baca dompet dimiliki oleh user. `:user` ini mengacu ke nama kelas, hanya saja menggunakan huruf kecil semua
-
-###Menampilkan data yang berelasi
-Untuk menampilkan data yang sudah berelasi maka caranya mudah sekali. Rails itu mudah kawan............
+Kita juga bisa menambahkan data baru dengan memasaukkan langsung data author-nya.
 
 ```
-user = User.first
-user.dompet.balance
+book = Book.new
+book.title = "OOP PHP Fundamental"
+book.price = 185_000
+book.page = 150
+book.description = "Buku yang sangat direkomendasikan jika ingin memahami fundamental OOP menggunakan bahasa pemrograman PHP"
+book.author = Author.find(5)
+book
+book.save
 ```
 
-Perintah di atas cukup untuk menampilkan data balace yang ada di tabel dompet. Kok ujug-ujug ada user dan dompet sih?? Ya itulah kelebihan rails, saat kita menghubungkan tabel dengan mendefinisikan has_one dan belongs_to maka secara otomatis user dan dompet akan dibuat oleh rails.
+Katakanlah data author_id di tabel books sudah terisi, tinggal kita tampilkan data author pernah nulis buku apa saja nih.
+caranya adalah sebagai berikut
 
 ```
-dompet = Dompet.first
-dompet.user.name
+author = Author.first
+author.books.pluck(:title)
 ```
 
-Lalu `first` apa? nah ketika kita ketikkan User.first maka rail akan menampilkan data pertama di tabel.
-
-Hal di atas tentunya menjadi suatu kemudahan kita dalam mengakses data, dari pada kita melakukannya secara manual seperti ini
-
-```
-user = User.first
-id = user.id
-dompet = Dompet.find_by(user_id: id)
-dompet.balance
-```
-
-lebih mudah dengan cara yang rails kasih kan?? rails is so beautiful lhoooo
+Mudah kan? mudah dong??
+pada kode `author.books`, `books` ini kita dapatkan dari mana? jawabannya adalah saat kita mendefinisikan relation di model author (`has_many :books`).
+Sedangkan pluck udah tau lah ya apa kegunaannya!
