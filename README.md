@@ -1,27 +1,51 @@
-# View Partial Lanjutan
+# Validasi Presence
 
-Bahasan kali ini masih pada view partial. Apa yang mau kita bahas??
+Kita akan bermain validasi di model book. Dan validasi pertama yang akan kita bahas adalah `presence`. Apa itu validasi presence?
+validasi ini akan mengembalikan error apabila field yang divalidasi tidak diisi. Contohnya adalah seperi ini :
 
-Jadi gini, kita dapat melewatkan data pada view partial ini, misal kita akan menampilkan data buku yang populer dan data ini akan kita tampilkan di halaman index.html.erb (untuk posisinya kita letakkan di bawah aja ya!). Untuk itu kita tambahkan kode berikut di file index.html.erb :
-
-```
-<%= render 'info', popular_book: 'Ruby on Rails' %>
-```
-
-Jika sudah mempelajari tentang view partian maka bisa dibaca jika kode di atas me-render view `_info.html.erb` dan kita memberikan variabel dengan isi 'Ruby on Rails' yang akan ditampilkan.
-
-Kemudian kita bisa membuat view partial dengan nama `_info.html.erb` dan kita beri kode berikut :
+Kita letakkan kode berikut ini di mode book.rb :
 
 ```
-<h2>Popular Book</h2>
-
-- <%= popular_book %>
+validates :title, presence: true
+validates :description, presence: true
 ```
 
-Variabel `popular_book` diatas didapatkan saat kita memanggil view partial dan memberi sebuah data yang ditampung dalam variabel bernama popular_book.
+Kode di atas mengharuskan bahwa title dan description harus diisi, jika dikosongkan maka akan mengembalikan nilai `false`.
 
-Sebenanrnya isi dari variabel tersebut tidak harus statis, bisa saja data tile atau data dinamis lainnya, sehingga bisa ditulis seperti ini :
+Bisa kita coba melalui rails console :
 
 ```
-<%= render 'info', popular_book: @book.title %>
+b = Book.new
+
+b.title = nil
+
+b.save
+false
+
+b.errors
+#<ActiveModel::Errors:0x0000000007494ec0 @base=#<Book id: nil, title: nil, price: nil, page: 0, description: nil, created_at: nil, updated_at: nil, author_id: nil>, @messages={:title=>["can't be blank"], :description=>["can't be blank"]}, @details={:title=>[{:error=>:blank}], :description=>[{:error=>:blank}]}>
+
+b.errors.messages
+{:title=>["can't be blank"], :description=>["can't be blank"]}
+
+b.errors.messages[:title]
+["can't be blank"]
+
+b.errors.messages[:description]
+["can't be blank"]
+```
+
+Pada pesan kesalahan di sini :
+
+```
+b.errors.messages[:description]
+["can't be blank"]
+```
+
+data yang dikembalikan dalam bentuk array, kenapa array? karena dalam stau pesan kesalahan ini bisa saja validasinya lebih dari satu.
+Bisa kita keluarkan datanya dengan menggunakan perintah:
+
+```
+b.errors.messages[:description].first
+"can't be blank"
 ```
