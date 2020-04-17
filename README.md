@@ -1,45 +1,43 @@
-# Validasi Length
+# Validasi Numericality
 
-Validasi length ini adalah berupa angka, dan ada beberapa jenis dari validasi length ini. Mari kita bahas
-
-1. minimum
-   Digunakan untuk menentukan nilai minimum suatu inputan. Misal
+1. numericality: true
+   Artinya inputan harus angka, namun untuk kasus string angka masih akan lolos validasi karena secara otomatis ruby akan merubah stirng angka menjadi angka.
 
 ```
-validates :description, length: {minimum: 10}
+validates :page, numericality: true
 ```
 
-2. maximum
-   Digunakan untuk menentukan nilai maksimal suatu inputan. Misal
+2. equal_to
+   Inputan harus sama dengan nilai yang didefinisikan.
 
 ```
-validates :description, length: {maximum: 10}
+validates :page, equal_to: 300
 ```
 
-3. in
-   Digunakan untuk menantukan jumlah karakter yang dimasukkan antara minimal dan maksimal. Misal
+3. greater_than
+   Inputan harus lebih besar dari yang didefinisikan
 
 ```
-validates :description, length: {in: 10..35}
+validates :page, greater_than: 250
 ```
 
-ini berari inputannya antara minimal 10 dan maksimal 35 karakter
-
-4. is
-   Digunakan untuk menentukan jumlah inputan harus pas sesuai yang didefinisikan
+4. greater_than_or_equal_to
+   Inputan harus lebih besar dari atau sama dengan yang didefinisikan
 
 ```
-validates :description, length: {is: 5}
+validates :page, greater_than_or_equal_to: 250
 ```
 
-Maka inputannya harus pas yaitu 5, selain itu akan salah
-
-Selain itu kita juga bisa menjalankan validationnya tanpa menyimpannya terlebih dahulu, caranya adalah dengan menggunakan method `valid?`. Misal
+5. less_than
+   Inputan harus kurang dari yang didefinisikan
 
 ```
-book = Book.new
-book.description = "ini description"
-book.valid?
-false
-book.errors.messages
+validates :page, less_than: 250
+```
+
+6. less_than_or_equal_to
+   Inputan harus lebih kecil dari atau sama dengan yang didefinisikan
+
+```
+validates :page, less_than_or_equal_to: 250
 ```
