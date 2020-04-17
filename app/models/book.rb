@@ -3,6 +3,7 @@ class Book < ApplicationRecord
 
   validates :title, presence: true
   validates :description, presence: true, length: {minimum: 10, maximum: 20}
+  validates :page, numericality: {numericality: true, greater_than: 10}
 
   def self.expensive
     where('price > 200000')
