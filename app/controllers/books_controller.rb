@@ -1,4 +1,7 @@
 class BooksController < ApplicationController
+  # layout :false
+  layout 'admin'
+
   def index
     # menampilkan semua data
     @books = Book.all
@@ -9,6 +12,7 @@ class BooksController < ApplicationController
     id = params[:id] # :id didapat dari palceholder di route
     @book = Book.find(id)
     # render plain: @book.title
+    render layout: false
   end
 
   def new
@@ -30,6 +34,7 @@ class BooksController < ApplicationController
   def edit
     # menampilkan form edit
     @book = Book.find(params[:id])
+    render layout: false
   end
 
   def update
