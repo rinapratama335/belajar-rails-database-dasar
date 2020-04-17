@@ -1,0 +1,6 @@
+<% if flash[:notice].present? %>
+  <%= flash[:notice] %>
+<% end %><br>
+Name : <%= @author.name %><br>
+Address : <%= @author.address %><br>
+Age : <%= @author.old %>
