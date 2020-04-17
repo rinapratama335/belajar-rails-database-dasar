@@ -5,3 +5,6 @@ Title : <%= @book.title %><br />
 Description : <%= @book.description %><br />
 Price : <%= @book.price %><br />
 Page : <%= @book.page %>
+<br>
+
+<%= render 'info', popular_book: @book.title %>

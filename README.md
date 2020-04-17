@@ -1,29 +1,27 @@
-# Partial (Template Partial)
+# View Partial Lanjutan
 
-Jika kita lihat pad views baik itu books maupun author terdapat kode yang sama persis yaitu pada template `new.html.erb` dan `edit.html.erb`. Sebenarnya kita dapat me-reuse itu dalam satu file kemudia kita panggil (include) file tersebut ke dalam new maupun edit. Hal ini dinamakan dengan `partial`.
+Bahasan kali ini masih pada view partial. Apa yang mau kita bahas??
 
-Untuk membuat template partial kita buat nama file yang diawali dengan underscore(`_`). Misal kita akan membuat partial template pada form `book`. Kita buat file dengan nama `_form.html.erb` :
-
-```
-<%= form_for(@book) do |f| %>
-  <%= f.label :title %><br />
-  <%= f.text_field :title %><br />
-
-  <%= f.label :description %><br />
-  <%= f.text_area :description %><br />
-
-  <%= f.label :page %><br />
-  <%= f.text_field :page %><br />
-
-  <%= f.label :price %><br />
-  <%= f.text_field :price %><br />
-
-  <%= f.submit 'Save' %>
-<% end %>
-```
-
-kemudian kita tinggal panggil file partial di atas pada template `new.html.erb` dan `edit.html.erb` dengan memanggil nama file tanpa underscore. Jadi kita tinggal panggil `form` aja menjadi :
+Jadi gini, kita dapat melewatkan data pada view partial ini, misal kita akan menampilkan data buku yang populer dan data ini akan kita tampilkan di halaman index.html.erb (untuk posisinya kita letakkan di bawah aja ya!). Untuk itu kita tambahkan kode berikut di file index.html.erb :
 
 ```
-<%= render 'form' %>
+<%= render 'info', popular_book: 'Ruby on Rails' %>
+```
+
+Jika sudah mempelajari tentang view partian maka bisa dibaca jika kode di atas me-render view `_info.html.erb` dan kita memberikan variabel dengan isi 'Ruby on Rails' yang akan ditampilkan.
+
+Kemudian kita bisa membuat view partial dengan nama `_info.html.erb` dan kita beri kode berikut :
+
+```
+<h2>Popular Book</h2>
+
+- <%= popular_book %>
+```
+
+Variabel `popular_book` diatas didapatkan saat kita memanggil view partial dan memberi sebuah data yang ditampung dalam variabel bernama popular_book.
+
+Sebenanrnya isi dari variabel tersebut tidak harus statis, bisa saja data tile atau data dinamis lainnya, sehingga bisa ditulis seperti ini :
+
+```
+<%= render 'info', popular_book: @book.title %>
 ```
