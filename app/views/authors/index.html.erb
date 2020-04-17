@@ -1,0 +1,25 @@
+<% if flash[:notice].present? %>
+  <%= flash[:notice] %>
+<% end %>
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Address</td>
+      <td>Age</td>
+      <td>Action</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @authors.each do |author| %>
+    <tr>
+        <td><%= author.name %></td>
+        <td><%= author.address %></td>
+        <td><%= author.old %></td>
+        <td><%= link_to 'Show', author_path(author) %> | <%= link_to 'Edit', edit_author_path(author) %> | <%= link_to 'Delete', author_path(author), method: :delete, data: {confirm: 'Yahin Mau Dihapus??'} %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Tambah Data', new_author_path %>
