@@ -1,25 +1,29 @@
-# Penjelasan Tentang Layout
+# Partial (Template Partial)
 
-Secara default layout yang kita gunakan adalah `application.html.erb`. Maksudnya bagaimana tuh?
-Jadi gini, di rails setial kita membuat layout/tampilan halaman web maka akan di-load di dalam `application.html.erb`. Tampilan ini akan diload di bagian `<%= yield %>`. Jika masih ragu maka coba tambahkan apa saja yang akan menjadi tanda, misal saja kita tambahkan heading : `<h2>Belajar Ruby On Rails</h2>` maka setiap kita membuat tampilan halaman web baik itu book ataupun author maka tag heading tersebut akan muncul.
+Jika kita lihat pad views baik itu books maupun author terdapat kode yang sama persis yaitu pada template `new.html.erb` dan `edit.html.erb`. Sebenarnya kita dapat me-reuse itu dalam satu file kemudia kita panggil (include) file tersebut ke dalam new maupun edit. Hal ini dinamakan dengan `partial`.
 
-Jadi bisakan kita menonaktifkan layout ini? jawabannya adalah bisa. Misal kita ingin menonaktifkan layout default ini di halamn book (baik itu index, new, edit, maupun show) maka di controller book kita bisa tambahkan kode berikut ini di :
-
-```
-layout :false
-```
-
-Kita bisa juga menghilangkan layout ini di bagian tertentu saja. Maksudnya dalah begini, misalkan kita ingin layout default ini tidak ditampilkan di halaman show edit tetapi bisa ditampilkan di halaman index. Maka kita hanya perlu menonaktifkan default layout ini pada method show dan edit dengan menambahkan kode berikut :
+Untuk membuat template partial kita buat nama file yang diawali dengan underscore(`_`). Misal kita akan membuat partial template pada form `book`. Kita buat file dengan nama `_form.html.erb` :
 
 ```
-render layout: false
+<%= form_for(@book) do |f| %>
+  <%= f.label :title %><br />
+  <%= f.text_field :title %><br />
+
+  <%= f.label :description %><br />
+  <%= f.text_area :description %><br />
+
+  <%= f.label :page %><br />
+  <%= f.text_field :page %><br />
+
+  <%= f.label :price %><br />
+  <%= f.text_field :price %><br />
+
+  <%= f.submit 'Save' %>
+<% end %>
 ```
 
-Kemudian bagaimana jika kita ingin memakai layout yang lain?? Misal nih kita ada layout dengan nama `admin.htm.erb`.
-Untuk menggunakannya kita tinggal panggil layout-nya di controller dengan cara menambahkan kode seperti ini :
+kemudian kita tinggal panggil file partial di atas pada template `new.html.erb` dan `edit.html.erb` dengan memanggil nama file tanpa underscore. Jadi kita tinggal panggil `form` aja menjadi :
 
 ```
-layout 'admin'
+<%= render 'form' %>
 ```
-
-Yang perlu kita tahu adalah saat kita menggunakan layout seperti di atas maka dia akan menimpa default layout. Dan hanya satu layout saja yang jadi default, jadi kalau ada dua kita definisikan misal `layout 'admin'` dan `layout 'percobaan'` maka yang paling bawah yang akan dipakai
