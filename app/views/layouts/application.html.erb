@@ -11,7 +11,9 @@
 
   <body>
     <h2>Belajar Ruby On Rails</h2>
-
+    <% if flash[:notice].present? %>
+      <%= flash[:notice] %>
+    <% end %><br />
     <%= yield %>
   </body>
 </html>
