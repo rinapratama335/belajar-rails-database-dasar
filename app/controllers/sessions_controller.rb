@@ -20,4 +20,9 @@ class SessionsController < ApplicationController
       redirect_to new_session_path, notice: 'Username / Password Salah'
     end
   end
+
+  def destroy
+    session[:user_id] = nil
+    redirect_to new_session_path, notice: 'Kamu berhasil logout'
+  end
 end
