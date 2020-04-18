@@ -1,10 +1,12 @@
 class Book < ApplicationRecord
   # belongs_to :author
 
-  validates :title, presence: true
+  # validates :title, presence: true
   # validates :description, presence: true, length: {minimum: 10, maximum: 20}
   validates :page, numericality: {numericality: true, greater_than: 10}
   validates :description, exclusion: {in: ['good','bad','enough']}
+
+  validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
 
   def self.expensive
     where('price > 200000')
