@@ -1,64 +1,52 @@
-# Membuat Halaman Login
+# Membuat Session Login
 
-Sebelumnya kita sudah berhasil membuat halaman register, dan sekarang kita akan membuat halaman login user. Kita akan memanfaatkan controller session yang sebelumnya sudah kita buat. Namun karena aturan penamaan controller itu jamak maka kita ubah namanya menjadi `sessions_controller`.
+Sejauh ini kita sudah berhasil membuat halaman login, namun kita masih belum menandai bahwa user yang bersangkutan sudah login.
 
-Kemudian kita buat view untuk menampilkan halaman login. View ini disimpan pada folder `sessions` dengan nama `new.html.erb`. Untuk isinya adalah sebagai berikut :
-
-```
-<%= form_tag :sessions, action: :create do %>
-  <div>
-    <%= label_tag :username %>
-  </div>
-  <div>
-    <%= text_field :username %>
-  </div>
-
-  <div>
-    <%= label_tag :password %>
-  </div>
-  <div>
-    <%= password_field :password %>
-  </div>
-  <div>
-    <%= submit_tag "Login" %>
-  </div>
-<% end %>
-```
-
-Jika dilihat ternyata terdapat perbedaan tetang pembuatan form ini. Jika sebelumnya menggunakan `form_for` tapi kok ini menggunakan `form_tag`??
-
-`form_for` digunakan untuk form yang ada modelnya, sedangkan `from_tag` digunakan untuk form yang tidak ada modelnya, contohnya adalah form login ini. Karena tidak membutuhkan model makanya kita pakai `form_tag`.
-`:sessions` menunjukkan kalu kita kana mengolah form login ini di controller session, sedangkan `action: :create` adalah method yang akan mengolah adalah action create.
-
-Tidak lupa kita membuat route untuk login ini :
+Cara yang dapat kita lakukan adalah menyimpan suatu data (contohnya adalah id user yang login) ke suatu mekanisme yang disebut session. Session artinya kita menyimpan data yang dapat diakses dimana saja dari aplikasi kita. Untuk itu kita akan membuatnya :
+Kita tambahkan kode `session[:user_id] = user.id` di method create pada saat berhasi login :
 
 ```
-resources :sessions, only: [:new, :create]
+  .
+  .
+if user.authenticate(password)
+  session[:user_id] = user.id
+  redirect_to books_path, notice: 'Kamu berhasil login'
+  .
+  .
+  .
 ```
 
-Lalu kita akan menangkap datanya di controller sessions pada method create. Karena tidak memiliki model maka kita bisa ambil datanya secara langsung tanpa harus mendefinisikan new (misal saja `@login = Login.new`), tinggal akses langsung dan kita proses :
+Kita sudah menyimpan data user login ke dalam session dengan key `:user_id`, artinya kita bisa mengecek apakah user sudah login atau belum.
+
+Kita akan buat method bernama `current_user` yang kita letakkan di `application_controller.rb`. Method ini digunakan untuk mengambil data user yang sedang login :
 
 ```
-username = params[:username]
-password = params[:password]
-
-user = User.find_by(username: username)
-if user
-  if user.authenticate(password)
-    redirect_to books_path, notice: 'Kamu berhasil login'
+def current_user
+  if session[:user_id]
+    User.find(session[:user_id])
   else
-    redirect_to new_session_path, notice: 'Username / Password Salah'
+    nil
   end
-else
-  redirect_to new_session_path, notice: 'Username / Password Salah'
 end
 ```
 
-Kode di atas membuat sebiah notifikasi jika berhasil login maupun gagal login. Untuk memunculkan notifikasi ini kita akan memberikannya di application layout. Jadi setiap notifikasi akan selalu muncul karena kita render di application layout. Kita akan meletakkan kode ini di atas `yield` :
+Sedangkan untuk memeriksa user sudah login atau belum kita bisa buat method tersendiri, untuk peletakannya masih sama dengan method `current_user` yaitu di `application_controller.rb` :
 
 ```
-<% if flash[:notice].present? %>
-  <%= flash[:notice] %>
-<% end %><br />
-<%= yield %>
+def user_signed_in?
+  if current_user
+    true
+  else
+    redirect_to new_session_path, notice: 'Silahkan login terlebih dahulu'
+    return false
+  end
+end
 ```
+
+Jika sudah tinggal kita aplikasikan. Kita akan mulai untuk mengetesnya di controller `books_controller.rb` :
+
+```
+before_action :user_signed_in?
+```
+
+Dengan menambahkan kode di atas artinya adalah sebelum method yang ada di controller books dijalankan terlebih dahulu akan dilakukan pengecekan user login
