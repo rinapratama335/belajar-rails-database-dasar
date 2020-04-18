@@ -1,10 +1,10 @@
 class Book < ApplicationRecord
   # belongs_to :author
 
-  validates :title, presence: true
-  validates :description, presence: true, length: {minimum: 10}
-  validates :page, numericality: true
-  validates :price, numericality: true
+  validates :title, presence: {message: 'Field harus diisi'}
+  validates :description, presence: {message: 'Field harus diisi'}, length: {minimum: 10, message: 'Minimal adalah 10 karakter'}
+  validates :page, numericality: {message: 'Harus berupa angka'}
+  validates :price, numericality: {message: 'Harus berupa angka'}
 
   # validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
   # validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
