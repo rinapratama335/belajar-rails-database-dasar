@@ -1,54 +1,46 @@
-# Fitur has_secure_password Untuk Keamanan Login
+# Membuat Halaman Register User
 
-Sekarang kita masuk ke pembahasa login dan logout user. Dan fitur yang akan kita gunakan adalah fitur bawaan dari rails yaitu `bcrypt`. Apa fungsi dari gem `bcrypt` ini?? jadi gini, password yang nanti dimasukkan user akan disimpan ke dalam database tidak dalam bentuk plain text (supaya lebih aman), perlu adanya suatu method untuk mengenkripsi password tersebut. Dan tugas dari `bcrypt` ini adalah untuk mengenkripsi password dan akan dimasukkan ke dalam kolom tabel bernama `password_degest`, penamaan kolom password ini sangatlah penting ya.
+Nah saatnya kita membuat tampilan halaman web untuk register user.
 
-Jd langkah pertama kita aktifkan gem `bcrypt` di file Gemfile, kemudian kita install dengan perintah `bundle install`
+Yang pertama kita lakukan adalah membuat controller dengan nama `session_controller.rb`. Hal ini digunakan untuk login (akan dibahas nanti).
 
-Kemudian kita buat migrationnya, karena di project ini sudah ada tabel `users` maka kita tinggal tambahkan kolom `password_degest` saja,
+Yang kedua kita buat controller dengan nama `accounts_controller.rb`, isinya adalah method `new` untuk menampilkan form register dan method `create` untuk menyimpan data
 
-```
-rails g migration add_password_degest_to_users password_degest
-```
-
-kemudian jalankan migrasinya, `rake db:migrate`.
-
-Oke kita sudah memiliki tabel user yang memiliki kolom password_degest, sekarang tinggal kita terapkan deh di project.
-
-Kita masuk ke model user.rb kemudian tambahkan kode berikut :
+Kemudia di config routes.rb kita tambahkan resource parameter untuk accounts yang hanya untuk method new dan method create saja. Jadi kodenya adalah seperti di bawah ini :
 
 ```
-has_secure_password
+resources :accounts, only: [:new, :create]
 ```
 
-Dengan menambahakan kode `has_secure_password` maka kita memiliki keuntungan, di antaranya :
-
-1. Di belakang layar kita memiliki sebuah attribut dengan nama `password`
-2. Kita juga memiliki attribut `password_confirmation`
-3. Kedua attribut di atas sudah memiliki validator `presence`
-4. Memiliki method bernama `authenticate` untuk mengecek apakah user dengan password tertentu ada atau tidak, ini digunakan untuk fitur login
-
-Kita bisa memeriksanya melalui rails console :
+Nah di view untuk form new ini ada sedikit perbedaan,
 
 ```
-user = User.new
-user.name = "Joko Mulyadi"
-user.username = "jokomulyadi"
-user.password = "jokomulyadi"
-
-user
-#<User id: nil, name: "Joko Mulyadi", username: "jokomulyadi", password_digest: [FILTERED]>
-
-user.save
-User Create (0.9ms)  INSERT INTO `users` (`name`, `username`, `password_digest`) VALUES ('Joko Mulyadi', 'jokomulyadi', '$2a$12$1gO.hH72B3K7LdNOUt66oukKptakl9xBJo5FrTZLNOrVxfBw5hBv2')
-  (2.5ms)  COMMIT
-=> true
-
-
-user.authenticate('salah')
-false
-
-user.authenticate('jokomulyadi')
-#<User id: 4, name: "Joko Mulyadi", username: "jokomulyadi", password_digest: [FILTERED]>
+<%= form_for @user, url: accounts_path do |f| %>
+  ....
+  ....
+  ....
+<% end %>
 ```
 
-Melalui rails console di atas kita bisa ketahui jika kita sudah berhasil membuat fitur untuk register serta login (menggunakan authenticate)
+ada sedikit perbedaan karena kita menambahkan `url: accounts_path`, kira kira kenapa??? karena jika hanya `@users` saja maka form akan mengirim ke controller users (karena `@users` akan mengirim ke users_controrller), makanya kita tambahkan secara manual kalau dia akan mengirim parameter `@user` ini ke controller accounts.
+
+Jika sudah tinggal kita simpan aja :
+
+```
+def new
+  @user = User.new
+end
+
+def create
+  # render plain: params.inspect
+
+  @user = User.new(resource_params)
+  @user.save
+  redirect_to new_account_path
+end
+
+private
+def resource_params
+  params.require(:user).permit(:name, :username, :password)
+end
+```

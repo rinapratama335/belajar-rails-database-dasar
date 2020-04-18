@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :books
 
   resources :authors
+
+  resources :accounts, only: [:new, :create]
 end
