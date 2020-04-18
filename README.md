@@ -1,23 +1,19 @@
-# Validasi Menentukan Format Suatu Inputan (Menggunakan Regex)
+# Validasi Validasi Uniqueness
 
-Penggunaan format validation ini kita akan mengguakan Regex. Dan yang akan kita coba untuk validasi adalah title. Pura pura saja kalau title ini harus berupa email, jadi kita berikan validasi degan memanfaatkan reges yang mana jika inputannya bukan email maka akan tidak lolos validasi
+Validasi ini akan mengecek apakah nilai dari suatu inputan sudah ada di database atau belum. Jika sudah maka tidak akan lolos validasi.
 
 ```
-validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
+validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
 ```
 
 ```
 b = Book.new
-b.title = 'pemrograman berorientasi object'
+b.title = "Ruby Up and Running"
 
 b.valid?
+Book Exists? (0.5ms)  SELECT 1 AS one FROM `books` WHERE `books`.`title` = BINARY 'Ruby Up and Running' LIMIT 1
 false
 
 b.errors.messages
-{:title=>["is invalid"]}
-
-b.title = 'amelkahandayani@yahoo.com'
-
-b.valid?
-true
+{:title=>["has already been taken"]}
 ```
