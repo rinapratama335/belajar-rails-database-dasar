@@ -9,14 +9,20 @@ class Book < ApplicationRecord
   # validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
   # validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
 
-  validate :custom_validation
+  # validate :custom_validation
+  #
+  # def custom_validation
+  #   if page >= 300
+  #     if price < 200000
+  #       errors.add(:price, 'Harga minimal 150000 jika jumlah halaman 300 atau lebih')
+  #     end
+  #   end
+  # end
 
-  def custom_validation
-    if page >= 300
-      if price < 200000
-        errors.add(:price, 'Harga minimal 150000 jika jumlah halaman 300 atau lebih')
-      end
-    end
+  validates :price, numericality: {greater_than_or_equal_to: 200000}, if: :page_more_than_300
+
+  def page_more_than_300
+    page >= 300
   end
 
   def self.expensive
