@@ -1,45 +1,34 @@
-# Menampilkan Pesan Kesalahan Di Halaman Web
+# Menampilkan Pesan Kesalahan Masing Masing Form Field
 
-Jika validation sebelumnya kita hanya menampilkan pesan kesalahan di sisi console saja, maka kali ini kira akan menampilkan pesan kesalahan di halaman web.
+Kita telah berhasil menampilkan pesan kesalahan saat adanya validasi, namun yang masih menjadi kekurangan adalah pesan kesalahan tersebut masih menjadi satu (dalam kasus sebelumnya pesan kesalahan di atas semua). Nah gimana cara biar pesan kesalah ini muncul di setiap field form??
 
-1. Kita buat validation yang akan memvalidasi inputan (model book)
-
-```
-validates :title, presence: true
-validates :description, presence: true, length: {minimum: 10}
-validates :page, numericality: true
-validates :price, numericality: true
-```
-
-2. Kemudian kita perbaiki kode di controller book,
+Salah satu caranya adalah kita tinggal modifikasi saja do form view partialnya.
 
 ```
-def create
-  @book = Book.new(resource_params)
-  if @book.save
-    puts @book.errors.messages
-    flash[:notice] = 'Berhasil menambahkan data'
-    redirect_to books_path
-  else
-    render 'new'
-  end
-end
-```
-
-Perbaikan pertama adalah kita buat perkonsisian pada saat if berhasi dan pada saat gagal menympan akan me-render view `new`. Kita ketahui view `new` ini memanggil view partian `_form` yang mana di view partial tersebut menggunakan instance variabel yaitu `@book`.
-
-Maka perbaikan kedua adalah merubah yang variabel loka `book` menjadi instance variabel `@book` sehingga tidak terjadi kesalaha yang mana variabel `book` tidak dikenali.
-
-3. Di view partial `_form` kita cek apakah ada error atau tidak, jika ada maka tampilkan errornya
-
-```
-<% if @book.errors.any? %>
-  <% @book.errors.full_messages.each do |msg| %>
-    <div>
-      <%= msg %>
-    </div>
+<%= form_for(@book) do |f| %>
+  <%= f.label :title %><br />
+  <% if @book.errors.any? %>
+    <%= @book.errors[:title].first %>
   <% end %>
-<% end %>
-```
+  <%= f.text_field :title %><br />
 
-Untuk kodenya sendiri saya letakkan di atas, sehingga ketika error maka akan tampil di atas semua. Untuk memunculkan error di setiap form maka akan kita bahas pada pembahasan tersendiri.
+  <%= f.label :description %><br />
+  <% if @book.errors.any? %>
+    <%= @book.errors[:description].first %>
+  <% end %>
+  <%= f.text_area :description %><br />
+
+  <%= f.label :page %><br />
+  <% if @book.errors.any? %>
+    <%= @book.errors[:page].first %>
+  <% end %>
+  <%= f.text_field :page %><br />
+
+  <%= f.label :price %><br />
+  <% if @book.errors.any? %>
+    <%= @book.errors[:price].first %>
+  <% end %>
+  <%= f.text_field :price %><br />
+
+  <%= f.submit 'Save' %>
+```
