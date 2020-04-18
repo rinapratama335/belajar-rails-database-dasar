@@ -24,11 +24,14 @@ class BooksController < ApplicationController
     # menyimpan data dari form
     # render plain: params.inspect
 
-    book = Book.new(resource_params)
-    book.save
-    puts book.errors.messages
-    flash[:notice] = 'Berhasil menambahkan data'
-    redirect_to books_path
+    @book = Book.new(resource_params)
+    if @book.save
+      puts @book.errors.messages
+      flash[:notice] = 'Berhasil menambahkan data'
+      redirect_to books_path
+    else
+      render 'new'
+    end
   end
 
   def edit
