@@ -1,18 +1,18 @@
-# Validasi Inclusion
+# Validasi Exclusion
 
-Validasi ini mengharuskan inputan harus di antara array tertentu, array ini isinya adalah apa yang akan digunkana untuk memvaldasi. Selama inputan isinya di luar array tersebut maka akan mengembalikan nilai `false`/terjadi validasi. Misal :
+Jika validasi inclusion mengharuskan nilainya hanya boleh yang didefinisikan maka exclusion adalah sebaliknya, nilai yang dimusukkan ternyata di antara yang didefinisikan maka tidak lolos validasi.
 
 ```
-validates :description, inclusion: {in: ['good','bad','enough']}
+validates :description, exclusion: {in: ['good','bad','enough']}
 ```
 
 ```
 b = Book.new
-b.description = 'Bagus banget bukunya'
+b.description = 'good'
 
-b.false
+b.valid?
 false
 
 b.errors.messages
-{:description=>["is not included in the list"]}
+{:description=>["is reserved"]}
 ```
