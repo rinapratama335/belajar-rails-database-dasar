@@ -7,7 +7,17 @@ class Book < ApplicationRecord
   # validates :description, exclusion: {in: ['good','bad','enough']}
 
   # validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
-  validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
+  # validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
+
+  validate :custom_validation
+
+  def custom_validation
+    if page >= 300
+      if price < 200000
+        errors.add(:price, 'Harga minimal 150000 jika jumlah halaman 300 atau lebih')
+      end
+    end
+  end
 
   def self.expensive
     where('price > 200000')
