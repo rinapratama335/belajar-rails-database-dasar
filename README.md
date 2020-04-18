@@ -1,52 +1,40 @@
-# Membuat Session Login
+# Logout
 
-Sejauh ini kita sudah berhasil membuat halaman login, namun kita masih belum menandai bahwa user yang bersangkutan sudah login.
-
-Cara yang dapat kita lakukan adalah menyimpan suatu data (contohnya adalah id user yang login) ke suatu mekanisme yang disebut session. Session artinya kita menyimpan data yang dapat diakses dimana saja dari aplikasi kita. Untuk itu kita akan membuatnya :
-Kita tambahkan kode `session[:user_id] = user.id` di method create pada saat berhasi login :
+Logout intinya adalah menghancurkan session yang ada, jadi di dalam controller session kita buat sebuha method untuk menghapus sessions :
 
 ```
-  .
-  .
-if user.authenticate(password)
-  session[:user_id] = user.id
-  redirect_to books_path, notice: 'Kamu berhasil login'
-  .
-  .
-  .
-```
-
-Kita sudah menyimpan data user login ke dalam session dengan key `:user_id`, artinya kita bisa mengecek apakah user sudah login atau belum.
-
-Kita akan buat method bernama `current_user` yang kita letakkan di `application_controller.rb`. Method ini digunakan untuk mengambil data user yang sedang login :
-
-```
-def current_user
-  if session[:user_id]
-    User.find(session[:user_id])
-  else
-    nil
-  end
+def destroy
+  session[:user_id] = nil
+  redirect_to new_session_path, notice: 'Kamu berhasil logout'
 end
 ```
 
-Sedangkan untuk memeriksa user sudah login atau belum kita bisa buat method tersendiri, untuk peletakannya masih sama dengan method `current_user` yaitu di `application_controller.rb` :
+Tidak lupa juga di resource parameter di route kita tambahkan untuk method destroy juga :
 
 ```
-def user_signed_in?
-  if current_user
-    true
-  else
-    redirect_to new_session_path, notice: 'Silahkan login terlebih dahulu'
-    return false
-  end
-end
+resources :sessions, only: [:new, :create, :destroy]
 ```
 
-Jika sudah tinggal kita aplikasikan. Kita akan mulai untuk mengetesnya di controller `books_controller.rb` :
+Kemudian kita buat sebuah link untuk logout. Link ini akan muncul apabila user sudah login. Kita kita buat perkondisina di application layout untuk memunculkan link logout-nya :
 
 ```
-before_action :user_signed_in?
+<% if current_user %>
+  <div>
+    Halo <%= current_user.name %>
+    <%= link_to 'Logout', session_path(current_user), method: :destroy %>
+  </div>
+<% else %>
+  Silahkan login terlebih dahulu
+<% end %>
 ```
 
-Dengan menambahkan kode di atas artinya adalah sebelum method yang ada di controller books dijalankan terlebih dahulu akan dilakukan pengecekan user login
+Kode di atas akan memunculkan link logout jika user sudah login. Nah bagaimana caranya kita tau user itu sudah login? jawabannya adalah dengan memanggil method `current_user` yang ada di application controller.
+
+##ini ilmu baru
+Nah `current_user` ini sebenarnya adalah method yang hanya bisa diakses oleh application controller saja, tidak bisa diakses di view. Tapi kok ini bisa diakses ya?? jawabannya adalah kita mendaftarkan method `current_user` ini ke dalah `helper_method` di application controller.
+
+```
+helper_method :current_user
+```
+
+##ini ilmu baru

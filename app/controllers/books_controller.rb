@@ -2,7 +2,7 @@ class BooksController < ApplicationController
   before_action :user_signed_in?
 
   # layout :false
-  layout 'admin'
+  layout 'application'
 
   def index
     # menampilkan semua data

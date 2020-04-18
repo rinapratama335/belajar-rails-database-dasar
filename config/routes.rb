@@ -6,5 +6,5 @@ Rails.application.routes.draw do
   resources :authors
 
   resources :accounts, only: [:new, :create]
-  resources :sessions, only: [:new, :create]
+  resources :sessions, only: [:new, :create, :destroy]
 end
