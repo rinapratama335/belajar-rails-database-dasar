@@ -1,34 +1,12 @@
-# Menampilkan Pesan Kesalahan Masing Masing Form Field
+# Membuat Custom Error Message
 
-Kita telah berhasil menampilkan pesan kesalahan saat adanya validasi, namun yang masih menjadi kekurangan adalah pesan kesalahan tersebut masih menjadi satu (dalam kasus sebelumnya pesan kesalahan di atas semua). Nah gimana cara biar pesan kesalah ini muncul di setiap field form??
-
-Salah satu caranya adalah kita tinggal modifikasi saja do form view partialnya.
+Jika kita perhatikan lagi pesan error yang muncul adalah pesan default dari rails dan berbahasa inggris. Sebenarnya kita bisa menkostumisasi pesan yang tampil menjadi sesuai dengan yang kita inginkan. Hal yang bisa kita lakukan adalah kita bisa meng-custom validates di model menjadi seperti ini?
 
 ```
-<%= form_for(@book) do |f| %>
-  <%= f.label :title %><br />
-  <% if @book.errors.any? %>
-    <%= @book.errors[:title].first %>
-  <% end %>
-  <%= f.text_field :title %><br />
-
-  <%= f.label :description %><br />
-  <% if @book.errors.any? %>
-    <%= @book.errors[:description].first %>
-  <% end %>
-  <%= f.text_area :description %><br />
-
-  <%= f.label :page %><br />
-  <% if @book.errors.any? %>
-    <%= @book.errors[:page].first %>
-  <% end %>
-  <%= f.text_field :page %><br />
-
-  <%= f.label :price %><br />
-  <% if @book.errors.any? %>
-    <%= @book.errors[:price].first %>
-  <% end %>
-  <%= f.text_field :price %><br />
-
-  <%= f.submit 'Save' %>
+validates :title, presence: {presence: true, message: 'Field harus diisi'}
+validates :description, presence: {message: 'Field harus diisi'}, length: {minimum: 10, message: 'Minimal adalah 10 karakter'}
+validates :page, numericality: {message: 'Harus berupa angka'}
+validates :price, numericality: {message: 'Harus berupa angka'}
 ```
+
+Bukankah sebelumnya ada nilai true di validasi `presence`? Lalu kemana hilangnya? Begini, ketika membuat custom message di validasi bertipe `presence` maka otomatis dianggap true juga. Sebenarnya bisa saja kita menulisnya menjadi seperti ini `presence: {presence: true, message: 'Field harus diisi'}`, tetapi karena sudah dianggap `true` maka tidak perlu ditulis
