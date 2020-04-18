@@ -1,46 +1,64 @@
-# Membuat Halaman Register User
+# Membuat Halaman Login
 
-Nah saatnya kita membuat tampilan halaman web untuk register user.
+Sebelumnya kita sudah berhasil membuat halaman register, dan sekarang kita akan membuat halaman login user. Kita akan memanfaatkan controller session yang sebelumnya sudah kita buat. Namun karena aturan penamaan controller itu jamak maka kita ubah namanya menjadi `sessions_controller`.
 
-Yang pertama kita lakukan adalah membuat controller dengan nama `session_controller.rb`. Hal ini digunakan untuk login (akan dibahas nanti).
-
-Yang kedua kita buat controller dengan nama `accounts_controller.rb`, isinya adalah method `new` untuk menampilkan form register dan method `create` untuk menyimpan data
-
-Kemudia di config routes.rb kita tambahkan resource parameter untuk accounts yang hanya untuk method new dan method create saja. Jadi kodenya adalah seperti di bawah ini :
+Kemudian kita buat view untuk menampilkan halaman login. View ini disimpan pada folder `sessions` dengan nama `new.html.erb`. Untuk isinya adalah sebagai berikut :
 
 ```
-resources :accounts, only: [:new, :create]
-```
+<%= form_tag :sessions, action: :create do %>
+  <div>
+    <%= label_tag :username %>
+  </div>
+  <div>
+    <%= text_field :username %>
+  </div>
 
-Nah di view untuk form new ini ada sedikit perbedaan,
-
-```
-<%= form_for @user, url: accounts_path do |f| %>
-  ....
-  ....
-  ....
+  <div>
+    <%= label_tag :password %>
+  </div>
+  <div>
+    <%= password_field :password %>
+  </div>
+  <div>
+    <%= submit_tag "Login" %>
+  </div>
 <% end %>
 ```
 
-ada sedikit perbedaan karena kita menambahkan `url: accounts_path`, kira kira kenapa??? karena jika hanya `@users` saja maka form akan mengirim ke controller users (karena `@users` akan mengirim ke users_controrller), makanya kita tambahkan secara manual kalau dia akan mengirim parameter `@user` ini ke controller accounts.
+Jika dilihat ternyata terdapat perbedaan tetang pembuatan form ini. Jika sebelumnya menggunakan `form_for` tapi kok ini menggunakan `form_tag`??
 
-Jika sudah tinggal kita simpan aja :
+`form_for` digunakan untuk form yang ada modelnya, sedangkan `from_tag` digunakan untuk form yang tidak ada modelnya, contohnya adalah form login ini. Karena tidak membutuhkan model makanya kita pakai `form_tag`.
+`:sessions` menunjukkan kalu kita kana mengolah form login ini di controller session, sedangkan `action: :create` adalah method yang akan mengolah adalah action create.
+
+Tidak lupa kita membuat route untuk login ini :
 
 ```
-def new
-  @user = User.new
-end
+resources :sessions, only: [:new, :create]
+```
 
-def create
-  # render plain: params.inspect
+Lalu kita akan menangkap datanya di controller sessions pada method create. Karena tidak memiliki model maka kita bisa ambil datanya secara langsung tanpa harus mendefinisikan new (misal saja `@login = Login.new`), tinggal akses langsung dan kita proses :
 
-  @user = User.new(resource_params)
-  @user.save
-  redirect_to new_account_path
-end
+```
+username = params[:username]
+password = params[:password]
 
-private
-def resource_params
-  params.require(:user).permit(:name, :username, :password)
+user = User.find_by(username: username)
+if user
+  if user.authenticate(password)
+    redirect_to books_path, notice: 'Kamu berhasil login'
+  else
+    redirect_to new_session_path, notice: 'Username / Password Salah'
+  end
+else
+  redirect_to new_session_path, notice: 'Username / Password Salah'
 end
+```
+
+Kode di atas membuat sebiah notifikasi jika berhasil login maupun gagal login. Untuk memunculkan notifikasi ini kita akan memberikannya di application layout. Jadi setiap notifikasi akan selalu muncul karena kita render di application layout. Kita akan meletakkan kode ini di atas `yield` :
+
+```
+<% if flash[:notice].present? %>
+  <%= flash[:notice] %>
+<% end %><br />
+<%= yield %>
 ```
