@@ -1,4 +1,6 @@
 class BooksController < ApplicationController
+  before_action :user_signed_in?
+
   # layout :false
   layout 'admin'
 
