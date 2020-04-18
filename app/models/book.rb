@@ -1,10 +1,10 @@
 class Book < ApplicationRecord
   # belongs_to :author
 
-  # validates :title, presence: true
-  # validates :description, presence: true, length: {minimum: 10, maximum: 20}
-  # validates :page, numericality: {numericality: true, greater_than: 10}
-  # validates :description, exclusion: {in: ['good','bad','enough']}
+  validates :title, presence: true
+  validates :description, presence: true, length: {minimum: 10}
+  validates :page, numericality: true
+  validates :price, numericality: true
 
   # validates :title, format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i}
   # validates :title, uniqueness: {uniqueness: true, case_sensitive: true}
@@ -19,11 +19,11 @@ class Book < ApplicationRecord
   #   end
   # end
 
-  validates :price, numericality: {greater_than_or_equal_to: 200000}, if: :page_more_than_300
-
-  def page_more_than_300
-    page >= 300
-  end
+  # validates :price, numericality: {greater_than_or_equal_to: 200000}, if: :page_more_than_300
+  #
+  # def page_more_than_300
+  #   page >= 300
+  # end
 
   def self.expensive
     where('price > 200000')
